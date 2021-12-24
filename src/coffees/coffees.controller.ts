@@ -1,3 +1,4 @@
+import { CoffeesService } from './coffees.service';
 import {
   Body,
   Controller,
@@ -11,29 +12,31 @@ import {
 
 @Controller('coffees')
 export class CoffeesController {
+  constructor(private readonly coffeesService: CoffeesService) {}
+
   @Get()
   findAll(@Query() paginationQuery) {
-    const { limit = 10, offset = 0 } = paginationQuery;
-    return `return all coffees. Paginated by limit ${limit} and offset ${offset}`;
+    // const { limit = 10, offset = 0 } = paginationQuery;
+    return this.coffeesService.findAll();
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return `returns coffee number #${id} (${typeof id})`;
+    return this.coffeesService.findOne(+id);
   }
 
   @Post()
   create(@Body() body) {
-    return body;
+    return this.coffeesService.create(body);
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() body) {
-    return `updates coffee #${id} with data: ${JSON.stringify(body, null, 2)}`;
+    return this.coffeesService.update(+id, body);
   }
 
   @Delete(':id')
   delete(@Param('id') id: string) {
-    return `delete coffee #${id}`;
+    return this.coffeesService.remove(+id);
   }
 }
