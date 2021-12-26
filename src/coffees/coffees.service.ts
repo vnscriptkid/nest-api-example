@@ -1,49 +1,51 @@
+import { CreateCoffeeDto } from './dto/create-coffee.dto';
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { Repository } from 'typeorm';
+import { UpdateCoffeeDto } from './dto/update-coffee.dto';
 import { Coffee } from './entities/coffee.entity';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class CoffeesService {
-  private coffees: Coffee[] = [
-    {
-      id: 1,
-      name: 'arabica',
-      brand: 'trung nguyen',
-      flavors: ['bitter', 'sour'],
-    },
-  ];
+  constructor(
+    @InjectRepository(Coffee)
+    private readonly coffeeRepo: Repository<Coffee>,
+  ) {}
 
   findAll() {
-    return this.coffees;
+    return this.coffeeRepo.find();
   }
 
-  findOne(id: number) {
-    const coffee = this.coffees.find((c) => c.id === id);
+  async findOne(id: number) {
+    const coffee = await this.coffeeRepo.findOne(id);
 
     if (!coffee) throw new NotFoundException(`Coffee #${id} not found`);
 
     return coffee;
   }
 
-  update(id: number, data: Partial<Coffee>) {
-    const idx = this.coffees.findIndex((c) => c.id === id);
+  async update(id: number, updateCoffeeDto: UpdateCoffeeDto) {
+    const coffee = await this.coffeeRepo.preload({
+      id,
+      ...updateCoffeeDto,
+    });
 
-    if (idx === -1) throw new Error('Coffee not found');
+    if (!coffee) throw new NotFoundException(`Coffee #${id} not found`);
 
-    this.coffees[idx] = {
-      ...this.coffees[idx],
-      ...data,
-    };
+    return this.coffeeRepo.save(coffee);
   }
 
-  remove(id: number) {
-    const idx = this.coffees.findIndex((c) => c.id === id);
+  async remove(id: number) {
+    const coffee = await this.coffeeRepo.findOne(id);
 
-    if (idx === -1) throw new Error('Coffee not found');
+    if (!coffee) throw new NotFoundException(`Coffee #${id} not found`);
 
-    this.coffees.splice(idx, 1);
+    return this.coffeeRepo.remove(coffee);
   }
 
-  create(createCoffeeDto: any) {
-    this.coffees.push(createCoffeeDto);
+  create(createCoffeeDto: CreateCoffeeDto) {
+    const coffee = this.coffeeRepo.create(createCoffeeDto);
+
+    return this.coffeeRepo.save(coffee);
   }
 }
