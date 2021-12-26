@@ -113,8 +113,10 @@ app.useGlobalPipes(
   - `create schema public;`
 
 - First migration: `npx typeorm migration:generate -n FirstMigration`
-- Run migration: `npx typeorm migration:run`
-- Revert migration: `npx typeorm migration:revert`
+- Run pending migrations: `npx typeorm migration:run`
+- Revert one migration: `npx typeorm migration:revert`
+
+- More: https://www.youtube.com/watch?v=JfIvPDPUFo4
 
 ### 33. Understand Dependency Injection | 00:04:00
 
