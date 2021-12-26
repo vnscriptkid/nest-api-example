@@ -16,6 +16,8 @@ import { CoffeesModule } from './coffees/coffees.module';
       database: 'postgres',
       autoLoadEntities: true,
       synchronize: false /*process.env.NODE_ENV !== 'production'*/,
+      migrationsRun: true,
+      migrations: ['dist/migrations/*.js'],
     }),
   ],
   controllers: [AppController],
