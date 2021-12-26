@@ -107,6 +107,15 @@ app.useGlobalPipes(
 
 ### 32. Setting up Migrations | 00:06:58
 
+- Drop schema:
+
+  - `drop schema public cascade;`
+  - `create schema public;`
+
+- First migration: `npx typeorm migration:generate -n FirstMigration`
+- Run migration: `npx typeorm migration:run`
+- Revert migration: `npx typeorm migration:revert`
+
 ### 33. Understand Dependency Injection | 00:04:00
 
 ### 34. Control NestJS Module Encapsulation | 00:03:07
