@@ -1,6 +1,6 @@
 import { Column, Entity, Index, PrimaryGeneratedColumn } from 'typeorm';
 
-@Index(['name', 'type']) /* composite index */
+@Index(['title', 'type']) /* composite index */
 @Entity('event')
 export class Event {
   @PrimaryGeneratedColumn()
@@ -11,7 +11,7 @@ export class Event {
 
   @Index()
   @Column()
-  name: string;
+  title: string;
 
   @Column('json')
   payload: Record<string, any>;
