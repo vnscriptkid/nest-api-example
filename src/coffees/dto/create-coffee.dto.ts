@@ -9,4 +9,7 @@ export class CreateCoffeeDto {
 
   @IsString({ each: true })
   readonly flavors: string[];
+
+  @IsString({ each: true })
+  readonly ingredients: string[];
 }

@@ -1,3 +1,4 @@
+import { Ingredient } from './entities/ingredient.entity';
 import { CreateCoffeeDto } from './dto/create-coffee.dto';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Repository } from 'typeorm';
@@ -10,6 +11,9 @@ export class CoffeesService {
   constructor(
     @InjectRepository(Coffee)
     private readonly coffeeRepo: Repository<Coffee>,
+
+    @InjectRepository(Ingredient)
+    private readonly ingredientRepo: Repository<Ingredient>,
   ) {}
 
   findAll() {
@@ -27,9 +31,18 @@ export class CoffeesService {
   }
 
   async update(id: number, updateCoffeeDto: UpdateCoffeeDto) {
+    const ingredients =
+      updateCoffeeDto.ingredients &&
+      (await Promise.all(
+        updateCoffeeDto.ingredients.map((name) =>
+          this.preloadIngredientByName(name),
+        ),
+      ));
+
     const coffee = await this.coffeeRepo.preload({
       id,
       ...updateCoffeeDto,
+      ingredients,
     });
 
     if (!coffee) throw new NotFoundException(`Coffee #${id} not found`);
@@ -45,9 +58,28 @@ export class CoffeesService {
     return this.coffeeRepo.remove(coffee);
   }
 
-  create(createCoffeeDto: CreateCoffeeDto) {
-    const coffee = this.coffeeRepo.create(createCoffeeDto);
+  async create(createCoffeeDto: CreateCoffeeDto) {
+    const ingredients = await Promise.all(
+      createCoffeeDto.ingredients.map((name) =>
+        this.preloadIngredientByName(name),
+      ),
+    );
+
+    const coffee = this.coffeeRepo.create({
+      ...createCoffeeDto,
+      ingredients,
+    });
 
     return this.coffeeRepo.save(coffee);
+  }
+
+  async preloadIngredientByName(name: string) {
+    const ingredient = await this.ingredientRepo.findOne({ name });
+
+    if (ingredient) return ingredient;
+
+    const newIngredient = this.ingredientRepo.create({ name });
+
+    return this.ingredientRepo.save(newIngredient);
   }
 }
