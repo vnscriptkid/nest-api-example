@@ -15,6 +15,7 @@
     "start:prod": "node dist/main",
     "db:up": "docker-compose up -d db",
     "db:down": "docker-compose down",
+    "psql": "docker exec -it coffee-nest-api_db_1 psql -W postgres -U postgres -w",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",
     "test:watch": "jest --watch",
