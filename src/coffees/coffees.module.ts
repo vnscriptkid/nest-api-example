@@ -3,9 +3,10 @@ import { CoffeesController } from './coffees.controller';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Coffee } from './entities/coffee.entity';
+import { Ingredient } from './entities/ingredient.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Coffee])],
+  imports: [TypeOrmModule.forFeature([Coffee, Ingredient])],
   controllers: [CoffeesController],
   providers: [CoffeesService],
 })
