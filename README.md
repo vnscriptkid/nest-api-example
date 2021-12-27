@@ -97,13 +97,44 @@ app.useGlobalPipes(
 
 ### 27. Retrieve Entities with their Relations | 00:03:15
 
+- In many-to-many rel: `coffee - coffee_ingredients_ingredient - ingredient`
+  - one coffee can have many ingredients
+  - one ingredient can belong to many coffees
+
+```js
+this.coffeeRepo.find({
+  relations: ['ingredients'],
+});
+```
+
 ### 28. Using Cascading Inserts and Updates | 00:04:50
+
+- More: https://orkhan.gitbook.io/typeorm/docs/many-to-many-relations#saving-many-to-many-relations
 
 ### 29. Adding Pagination | 00:04:56
 
+- one way: offset
+
+```js
+this.coffeeRepo.find({
+  skip: offset,
+  take: limit,
+});
+```
+
+- the other: cursor
+
 ### 30. Use Transactions | 00:05:34
 
+- one way: manual transaction using `query runner`
+- the other?
+
 ### 31. Adding Indexes to Entities | 00:00:55
+
+- Behind the scenes: create look-up tables
+- types:
+  - single index
+  - compound index
 
 ### 32. Setting up Migrations | 00:06:58
 
